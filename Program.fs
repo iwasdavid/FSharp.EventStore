@@ -13,7 +13,7 @@ let main argv =
     let encIngestedMetaData = Json.serialize metaData
 
     let eventId = writeEventOfType EncIngested
-                  |> toStream "Cell-GB160120"
+                  |> toStream "Cell-Name"
                   |> withEventData encIngestedData
                   |> andMetaData encIngestedMetaData 
 

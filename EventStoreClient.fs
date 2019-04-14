@@ -2,6 +2,7 @@ module EventStoreClient
 
 open EventStore.ClientAPI
 open System
+open System.Text
 
 type EventType =
  | EncIngested
@@ -31,8 +32,8 @@ let createConnection() =
     conn
 
 let appendToStreamAsync (connection:IEventStoreConnection) (eventType:string) (streamName:string) (eventData:string) (metaData:string) =
-    let eventBytes = System.Text.Encoding.ASCII.GetBytes eventData
-    let eventMetaBytes = System.Text.Encoding.ASCII.GetBytes metaData
+    let eventBytes = Encoding.ASCII.GetBytes eventData
+    let eventMetaBytes = Encoding.ASCII.GetBytes metaData
     let event = EventData(Guid.NewGuid(), eventType, true, eventBytes, eventMetaBytes)
 
     connection.AppendToStreamAsync(streamName, (int64 -2), event)
@@ -50,8 +51,8 @@ let writeEventOfType (eventType:EventType) =
     let connection = createConnection()
     appendToStreamAsync connection stringEventType
     
-let toStream stream func = func stream
+let toStream stream appendToStreamAsync = appendToStreamAsync stream
 
-let withEventData data func = func data
+let withEventData data appendToStreamAsync = appendToStreamAsync data
 
-let andMetaData data func = func data
+let andMetaData data appendToStreamAsync = appendToStreamAsync data
