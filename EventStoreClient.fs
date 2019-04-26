@@ -4,18 +4,6 @@ open EventStore.ClientAPI
 open System
 open System.Text
 
-type EventType =
- | EncIngested
- | EncChecked
-
-type EventData = 
-    { Name: string
-      Something: int }
-
-type MetaData = 
-    { Name2: string
-      Something2: int }
-
 let mutable private username:string = ""
 let mutable private password:string = ""
 let mutable private address:string = ""
@@ -43,13 +31,9 @@ let appendToStreamAsync (connection:IEventStoreConnection) (eventType:string) (s
     
     event.EventId
 
-let writeEventOfType (eventType:EventType) =
-    let stringEventType = match eventType with
-                          | EncIngested -> "EncIngested"
-                          | EncChecked -> "EncChecked"
-                          
+let writeEventOfType (eventType:string) =                          
     let connection = createConnection()
-    appendToStreamAsync connection stringEventType
+    appendToStreamAsync connection eventType
     
 let toStream stream appendToStreamAsync = appendToStreamAsync stream
 

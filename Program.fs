@@ -1,21 +1,25 @@
 ﻿open EventStoreClient
 open FSharp.Json
+open System
+
+type Data = { PolicyHolder: string; Cost: decimal }
+type Meta = { LinkId: int; Date: DateTime } 
 
 [<EntryPoint>]
 let main argv =
 
     eventStoreSetup "admin" "changeit" "localhost:1113"
 
-    let data = { Name = "EncIngested"; Something = 12 }
-    let metaData = { Name2 = "Blah"; Something2 = 122 }
+    let data = { PolicyHolder = "David"; Cost = 80.99m }
+    let metaData = { LinkId = 123; Date = DateTime.Now }
     
-    let encIngestedData = Json.serialize data
-    let encIngestedMetaData = Json.serialize metaData
+    let eventData = Json.serialize data
+    let metaData = Json.serialize metaData
 
-    let eventId = writeEventOfType EncIngested
-                  |> toStream "Cell-Name"
-                  |> withEventData encIngestedData
-                  |> andMetaData encIngestedMetaData 
+    let eventId = writeEventOfType "OrderPlaced"
+                  |> toStream "Man-Utd-Season-Ticket"
+                  |> withEventData eventData
+                  |> andMetaData metaData
 
     printfn "Event created with Id: %A" eventId
     0 // return an integer exit code
