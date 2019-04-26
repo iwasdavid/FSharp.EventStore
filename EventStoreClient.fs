@@ -8,12 +8,13 @@ let mutable private username:string = ""
 let mutable private password:string = ""
 let mutable private address:string = ""
 
+// Change all this
 let eventStoreSetup name pw ad =
     username <- name
     password <- pw
     address <- ad
 
-let createConnection() =
+let createConnection () =
     let uri = Uri(sprintf "tcp://%s:%s@%s" username password address)
     let conn = EventStoreConnection.Create(uri)
     conn.ConnectAsync().Wait()
