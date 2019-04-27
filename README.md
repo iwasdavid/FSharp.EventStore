@@ -15,3 +15,14 @@ let eventId = writeEventOfType "OrderPlaced"
 
 printfn "Event created with Id: %A" eventId
 ```
+
+## Read Events from Stream
+
+```fsharp
+let slice = readForwardAndGet 10
+            |> eventsFromStream "Man-Utd-Season-Ticket"
+            |> startingAtEvent 765
+
+    
+slice.Events |> Array.iter (fun e -> printfn "Original event: %A" (Encoding.UTF8.GetString(e.Event.Metadata)))
+```

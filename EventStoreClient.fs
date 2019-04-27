@@ -4,11 +4,12 @@ open EventStore.ClientAPI
 open System
 open System.Text
 
-let mutable private username:string = ""
-let mutable private password:string = ""
-let mutable private address:string = ""
-
 // Change all this
+let mutable  username:string = ""
+let mutable  password:string = ""
+let mutable  address:string = ""
+
+// And this
 let eventStoreSetup name pw ad =
     username <- name
     password <- pw
@@ -20,6 +21,20 @@ let createConnection () =
     conn.ConnectAsync().Wait()
     conn
 
+let readEventsForwards count streamName start =
+  let connection = createConnection()
+  let events = connection.ReadStreamEventsForwardAsync(streamName, (int64 start), count, true)
+               |> Async.AwaitTask
+               |> Async.RunSynchronously
+  connection.Dispose() |> ignore
+  events
+
+let readForwardAndGet count = readEventsForwards count
+
+let eventsFromStream s f = f s
+
+let startingAtEvent c f = f c
+
 let appendToStreamAsync (connection:IEventStoreConnection) (eventType:string) (streamName:string) (eventData:string) (metaData:string) =
     let eventBytes = Encoding.ASCII.GetBytes eventData
     let eventMetaBytes = Encoding.ASCII.GetBytes metaData
@@ -29,6 +44,8 @@ let appendToStreamAsync (connection:IEventStoreConnection) (eventType:string) (s
     |> Async.AwaitTask
     |> Async.RunSynchronously
     |> ignore
+
+    connection.Dispose() |> ignore
     
     event.EventId
 
