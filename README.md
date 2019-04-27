@@ -26,3 +26,21 @@ let slice = readForwardAndGet 10
     
 slice.Events |> Array.iter (fun e -> printfn "Original event: %A" (Encoding.UTF8.GetString(e.Event.Metadata)))
 ```
+
+## Persistent Subscriptions
+
+```fsharp
+let processEvent (subscriptionBase:EventStorePersistentSubscriptionBase) (resolvedEvent:ResolvedEvent) =
+    // Handle event appearing for example:
+    printfn "Event meta data is: %s" (Encoding.UTF8.GetString(resolvedEvent.Event.Metadata))
+    subscriptionBase.Acknowledge(resolvedEvent)
+
+let handleDrop (subscriptionBase:EventStorePersistentSubscriptionBase) (reason:SubscriptionDropReason) (e:exn) =
+    // Handle drop logic
+    ()
+
+connectToPersistentSubscriptionStream "Man-Utd-Season-Ticket"
+|> andGroupName "ManchesterUnited"
+|> whenEventArrives processEvent
+|> ifSubscriptionDrops handleDrop
+```

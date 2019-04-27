@@ -25,6 +25,7 @@ bld/
 [Ll]og/
 
 .DS_Store
+Program.fs
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
