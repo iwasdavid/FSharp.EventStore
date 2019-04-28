@@ -24,7 +24,7 @@ let main argv =
 
         connectToPersistentSubscriptionStream "Man-Utd-Season-Ticket"
         |> andGroupName "ManchesterUnited"
-        |> whenEventArrives processEvent
+        |> whenEventAppears processEvent
         |> ifSubscriptionDrops handleDrop
 
     let writeEvents () =

@@ -36,11 +36,11 @@ let processEvent (subscriptionBase:EventStorePersistentSubscriptionBase) (resolv
     subscriptionBase.Acknowledge(resolvedEvent)
 
 let handleDrop (subscriptionBase:EventStorePersistentSubscriptionBase) (reason:SubscriptionDropReason) (e:exn) =
-    // Handle drop logic
-    ()
+    // Handle drop logic, i.e:
+    reconnectToPersistentSubscription()
 
 connectToPersistentSubscriptionStream "Man-Utd-Season-Ticket"
 |> andGroupName "ManchesterUnited"
-|> whenEventArrives processEvent
+|> whenEventAppears processEvent
 |> ifSubscriptionDrops handleDrop
 ```

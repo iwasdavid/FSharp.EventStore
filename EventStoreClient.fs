@@ -48,7 +48,7 @@ let connectToPersistentSubscriptionStream stream = connectToPersistentSubscripti
 
 let andGroupName group f = f group
 
-let whenEventArrives (processEvent:ProcessEventType) f = f processEvent
+let whenEventAppears (processEvent:ProcessEventType) f = f processEvent
 
 let ifSubscriptionDrops (s:SubscriptionDroppedType) f = f s
 
