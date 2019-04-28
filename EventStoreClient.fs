@@ -26,11 +26,23 @@ let createConnection () =
   
 // Persistent Subscriptions
 
+let mutable psStream:string = ""
+let mutable psGroup:string = ""
+let mutable psProcess:ProcessEventType = (fun _ _ -> ())
+let mutable psDropped:SubscriptionDroppedType = (fun _ _ _ -> ())
+
 let connectToPersistentSubscription (stream:string) (group:string) (pro:ProcessEventType) (sub:SubscriptionDroppedType) =
+  psStream <- stream
+  psGroup <- group
+  psProcess <- pro
+  psDropped <- sub
+
   let conn = createConnection()
   conn.ConnectToPersistentSubscription(stream, group, pro, sub) |> ignore
-  Console.WriteLine("waiting for events. press enter to exit")
-  Console.ReadLine() |> ignore
+
+let reconnectToPersistentSubscription() =
+  let conn = createConnection()
+  conn.ConnectToPersistentSubscription(psStream, psGroup, psProcess, psDropped) |> ignore
 
 let connectToPersistentSubscriptionStream stream = connectToPersistentSubscription stream
 
